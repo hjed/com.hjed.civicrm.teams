@@ -174,28 +174,31 @@ function teams_civicrm_post( $op, $objectName, $objectId, &$objectRef ) {
 }
 
 function teams_create_team_group($objectId, &$objectRef) {
+
   $params = array(
     'name_a_b' => "Member",
-    'contact_sub_type_a' => "Team",
-    'api.SavedSearch.create' => array(
-      'form_values' => array(
-        'relation_type_id' => '$value.id',
-        'relation_target_name' => $objectRef->legal_name,
-      ),
-      'api.Group.create' => array(
-        'name' => $objectRef->legal_name,
-        'title' => $objectRef->legal_name,
-        'saved_search_id' => '$value.id',
-        'is_active' => 1,
-        'visibility' => 'User and User Admin Only',
-        'is_hidden' => 0,
-        'is_reserved' => 0,
-      ),
-    )
+    'contact_sub_type_a' => "Team"
+  );
+  $result = civicrm_api3('RelationshipType', 'get', $params);
+  $params = array(
+    'form_values' => array(
+      'relation_type_id' => key($result['values']).'_b_a',
+      'relation_target_name' => $objectRef->legal_name,
+      'operator'=>'and'
+    ),
+    'api.Group.create' => array(
+      'name' => $objectRef->legal_name,
+      'title' => $objectRef->legal_name,
+      'saved_search_id' => '$value.id',
+      'is_active' => 1,
+      'visibility' => 'User and User Admin Only',
+      'is_hidden' => 0,
+      'is_reserved' => 0,
+    ),
   );
 
   try{
-    $result = civicrm_api3('RelationshipType', 'get', $params);
+    $result = civicrm_api3('SavedSearch', 'create', $params);
   } catch (CiviCRM_API3_Exception $e) {
     // Handle error here.
     $errorMessage = $e->getMessage();
