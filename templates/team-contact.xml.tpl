@@ -76,7 +76,7 @@
       <profile_group_name>Team Profile</profile_group_name>
     </ProfileField>
     <ProfileField>
-      <field_name>custom.civicrm_value_team_details_{$customIDs.civicrm_custom_group}.team_lead_{$customIDs.civicrm_custom_field}<</field_name>
+      <field_name>custom.civicrm_value_team_details_{$customIDs.civicrm_custom_group}.team_lead_{$customIDs.civicrm_custom_field}</field_name>
       <is_active>1</is_active>
       <weight>2</weight>
       <help_pre>The team lead of the team</help_pre>

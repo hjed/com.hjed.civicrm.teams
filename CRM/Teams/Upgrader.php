@@ -3,7 +3,7 @@ use CRM_Teams_ExtensionUtil as E;
 
 /**
  * Collection of upgrade steps.
- * Heavily borrowed from CiviVolunter
+ * Heavily borrowed from CiviVolunter https://github.com/civicrm/org.civicrm.volunteer/blob/master/CRM/Volunteer/Upgrader.php
  */
 class CRM_Teams_Upgrader extends CRM_Teams_Upgrader_Base {
 
@@ -18,12 +18,13 @@ class CRM_Teams_Upgrader extends CRM_Teams_Upgrader_Base {
   public function install() {
     $teamContactTypeId = $this->create_team_contact_type();
     $this->create_relationships();
-    
+
+    $smarty = CRM_Core_Smarty::singleton();
     $smarty->assign('team_contact_type_id', $teamContactTypeId);
 
     $customIDs = $this->findCustomGroupValueIDs();
     $smarty->assign('customIDs', $customIDs);
-    $this->executeCustomDataTemplateFile("team_contact.xml.tpl");
+    $this->executeCustomDataTemplateFile("team-contact.xml.tpl");
   }
 
 

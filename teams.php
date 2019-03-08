@@ -161,3 +161,53 @@ function teams_civicrm_navigationMenu(&$menu) {
   ));
   _teams_civix_navigationMenu($menu);
 } // */
+
+/**
+ * Implementation of hook_civicrm_post
+ *
+ * @link http://wiki.civicrm.org/confluence/display/CRMDOC/hook_civicrm_post
+ */
+function teams_civicrm_post( $op, $objectName, $objectId, &$objectRef ) {
+  if($objectName == 'Organization' && $op == 'create') {
+    teams_create_team_group($objectId, $objectRef);
+  }
+}
+
+function teams_create_team_group($objectId, &$objectRef) {
+  $params = array(
+    'name_a_b' => "Member",
+    'contact_sub_type_a' => "Team",
+    'api.SavedSearch.create' => array(
+      'form_values' => array(
+        'relation_type_id' => '$value.id',
+        'relation_target_name' => $objectRef->legal_name,
+      ),
+      'api.Group.create' => array(
+        'name' => $objectRef->legal_name,
+        'title' => $objectRef->legal_name,
+        'saved_search_id' => '$value.id',
+        'is_active' => 1,
+        'visibility' => 'User and User Admin Only',
+        'is_hidden' => 0,
+        'is_reserved' => 0,
+      ),
+    )
+  );
+
+  try{
+    $result = civicrm_api3('RelationshipType', 'get', $params);
+  } catch (CiviCRM_API3_Exception $e) {
+    // Handle error here.
+    $errorMessage = $e->getMessage();
+    $errorCode = $e->getErrorCode();
+    $errorData = $e->getExtraParams();
+    return array(
+      'is_error' => 1,
+      'error_message' => $errorMessage,
+      'error_code' => $errorCode,
+      'error_data' => $errorData,
+    );
+  }
+
+  return $result;
+}

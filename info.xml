@@ -1,7 +1,7 @@
 <?xml version="1.0"?>
 <extension key="com.hjed.civicrm.teams" type="module">
   <file>teams</file>
-  <name>FIXME</name>
+  <name>Teams for CiviCRM</name>
   <description>FIXME</description>
   <license>AGPL-3.0</license>
   <maintainer>
