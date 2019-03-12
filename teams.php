@@ -172,9 +172,17 @@ function teams_civicrm_post( $op, $objectName, $objectId, &$objectRef ) {
   // there's an empty character at the start of team that causes problems
   if($objectName == 'Organization' && $op == 'create' && strpos($objectRef->contact_sub_type, "Team") != false ) {
     teams_create_team_group($objectId, $objectRef);
-  } else if($objectName == 'Relationship' && ($op == 'edit' || $op == 'create')) {
-    if(CRM_Teams_Helper::get_team_member_relationship_id() == $objectRef->relationship_type_id) {
-      CRM_Teams_Helper::link_contact_to_team_from_relationship($objectRef);
+  } else if($objectName == 'Relationship') {
+    if ($op == 'edit' || $op == 'create') {
+      if (CRM_Teams_Helper::get_team_member_relationship_id() == $objectRef->relationship_type_id) {
+        if($objectRef->is_active == "1") {
+          CRM_Teams_Helper::link_contact_to_team_from_relationship($objectRef);
+        } else {
+          CRM_Teams_Helper::unlink_contact_to_team_from_relationship($objectRef);
+        }
+      }
+    } else if($op == 'delete') {
+      CRM_Teams_Helper::unlink_contact_to_team_from_relationship($objectRef);
     }
   }
   // TODO: handle delete
@@ -183,7 +191,7 @@ function teams_civicrm_post( $op, $objectName, $objectId, &$objectRef ) {
 function teams_civicrm_custom($op, $groupId, $entityID, &$params) {
   if($op == 'edit' || $op == 'create') {
     if($groupId == CRM_Teams_Helper::get_team_membership_group_id()) {
-      CRM_Teams_Helper::link_contact_to_team_from_custom_field($entityID, $params);
+      CRM_Teams_Helper::link_or_unlink_contact_to_team_from_custom_field($entityID, $params);
     }
   }
 }
