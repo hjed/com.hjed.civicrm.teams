@@ -1,6 +1,7 @@
 <?php
 
 require_once 'teams.civix.php';
+require_once "CRM/Teams/CRM_Teams_Helper.php";
 use CRM_Teams_ExtensionUtil as E;
 
 /**
@@ -181,8 +182,8 @@ function teams_civicrm_post( $op, $objectName, $objectId, &$objectRef ) {
 
 function teams_civicrm_custom($op, $groupId, $entityID, &$params) {
   if($op == 'edit' || $op == 'create') {
-    if($groupId == teams_get_team_membership_group_id()) {
-      CRM_Teams_Helper::link_contact_to_team($entityID, $params);
+    if($groupId == CRM_Teams_Helper::get_team_membership_group_id()) {
+      CRM_Teams_Helper::link_contact_to_team_from_custom_field($entityID, $params);
     }
   }
 }
