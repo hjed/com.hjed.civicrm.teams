@@ -38,8 +38,8 @@
       <text_length>255</text_length>
       <note_columns>60</note_columns>
       <note_rows>4</note_rows>
-      <column_name>team_lead_{$customIDs.civicrm_custom_field}</column_name>
-      <filter>action=get&amp;contact_sub_type=Indvidual</filter>
+      <column_name>team_details_team_lead</column_name>
+      <filter>action=get&amp;contact_type=Individual</filter>
       <in_selector>0</in_selector>
       <custom_group_name>Team_Details</custom_group_name>
     </CustomField>
@@ -64,7 +64,7 @@
   </ProfileGroups>
   <ProfileFields>
     <ProfileField>
-      <field_name>legal_name</field_name>
+      <field_name>organization_name</field_name>
       <is_active>1</is_active>
       <is_required>1</is_required>
       <weight>1</weight>
@@ -76,7 +76,7 @@
       <profile_group_name>Team Profile</profile_group_name>
     </ProfileField>
     <ProfileField>
-      <field_name>custom.civicrm_value_team_details_{$customIDs.civicrm_custom_group}.team_lead_{$customIDs.civicrm_custom_field}</field_name>
+      <field_name>custom.civicrm_value_team_details_{$customIDs.civicrm_custom_group}.team_details_team_lead</field_name>
       <is_active>1</is_active>
       <weight>2</weight>
       <help_pre>The team lead of the team</help_pre>

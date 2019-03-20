@@ -63,29 +63,42 @@ class CRM_Teams_Upgrader extends CRM_Teams_Upgrader_Base {
   }
 
   public function create_relationships() {
-    $result = civicrm_api3('RelationshipType', 'create', [
-      'name_a_b' => "Team Lead",
-      'name_b_a' => "Team Lead of",
-      'description' => "The person leading the team",
-      'contact_type_b' => "Individual",
-      'contact_sub_type_a' => "Team",
-      'is_reserved' => 1,
+    // check it doesn't exist
+    $result = civicrm_api3('RelationshipType', 'get', [
+      'sequential' => 1,
+      'name_a_b' => CRM_Teams_Helper::TEAM_LEAD_RELATIONSHIP_A_B
     ]);
-    if (CRM_Utils_Array::value('is_error', $create)) {
-      CRM_Core_Error::debug_var('teamlead', $create, TRUE, TRUE, 'com.hjed.civicrm.teams');
-      throw new CRM_Core_Exception('Failed to register team lead relationship');
+    if($result['count'] == 0) {
+      $result = civicrm_api3('RelationshipType', 'create', [
+        'name_a_b' => CRM_Teams_Helper::TEAM_LEAD_RELATIONSHIP_A_B,
+        'name_b_a' => CRM_Teams_Helper::TEAM_LEAD_RELATIONSHIP_B_A,
+        'description' => "The person leading the team",
+        'contact_type_b' => "Individual",
+        'contact_sub_type_a' => "Team",
+        'is_reserved' => 1,
+      ]);
+      if (CRM_Utils_Array::value('is_error', $create)) {
+        CRM_Core_Error::debug_var('teamlead', $create, TRUE, TRUE, 'com.hjed.civicrm.teams');
+        throw new CRM_Core_Exception('Failed to register team lead relationship');
+      }
     }
-    $result = civicrm_api3('RelationshipType', 'create', [
-      'name_a_b' => "Member",
-      'name_b_a' => "Member of",
-      'description' => "A member of the team",
-      'contact_type_b' => "Individual",
-      'contact_sub_type_a' => "Team",
-      'is_reserved' => 1,
+    $result = civicrm_api3('RelationshipType', 'get', [
+      'sequential' => 1,
+      'name_a_b' => CRM_Teams_Helper::MEMBER_RELATIONSHIP_A_B
     ]);
-    if (CRM_Utils_Array::value('is_error', $create)) {
-      CRM_Core_Error::debug_var('teammember', $create, TRUE, TRUE, 'com.hjed.civicrm.teams');
-      throw new CRM_Core_Exception('Failed to register team member relationship');
+    if($result['count'] == 0) {
+      $result = civicrm_api3('RelationshipType', 'create', [
+        'name_a_b' => CRM_Teams_Helper::MEMBER_RELATIONSHIP_A_B,
+        'name_b_a' => CRM_Teams_Helper::MEMBER_RELATIONSHIP_B_A,
+        'description' => "A member of the team",
+        'contact_type_b' => "Individual",
+        'contact_sub_type_a' => "Team",
+        'is_reserved' => 1,
+      ]);
+      if (CRM_Utils_Array::value('is_error', $create)) {
+        CRM_Core_Error::debug_var('teammember', $create, TRUE, TRUE, 'com.hjed.civicrm.teams');
+        throw new CRM_Core_Exception('Failed to register team member relationship');
+      }
     }
   }
 

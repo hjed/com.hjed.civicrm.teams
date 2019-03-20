@@ -180,9 +180,19 @@ function teams_civicrm_post( $op, $objectName, $objectId, &$objectRef ) {
         } else {
           CRM_Teams_Helper::unlink_contact_to_team_from_relationship($objectRef);
         }
+      } elseif (CRM_Teams_Helper::get_team_lead_relationship_id() == $objectRef->relationship_type_id) {
+        if($objectRef->is_active == "1") {
+          CRM_Teams_Helper::link_team_lead_to_team_from_relationship($objectRef);
+        } else {
+          CRM_Teams_Helper::unlink_team_lead_to_team_from_relationship($objectRef);
+        }
       }
     } else if($op == 'delete') {
-      CRM_Teams_Helper::unlink_contact_to_team_from_relationship($objectRef);
+      if(CRM_Teams_Helper::get_team_member_relationship_id() == $objectRef->relationship_type_id) {
+        CRM_Teams_Helper::unlink_contact_to_team_from_relationship($objectRef);
+      } elseif (CRM_Teams_Helper::get_team_lead_relationship_id() == $objectRef->relationship_type_id) {
+        CRM_Teams_Helper::unlink_team_lead_to_team_from_relationship($objectRef);
+      }
     }
   }
   // TODO: handle delete
@@ -192,6 +202,8 @@ function teams_civicrm_custom($op, $groupId, $entityID, &$params) {
   if($op == 'edit' || $op == 'create') {
     if($groupId == CRM_Teams_Helper::get_team_membership_group_id()) {
       CRM_Teams_Helper::link_or_unlink_contact_to_team_from_custom_field($entityID, $params);
+    } elseif ($groupId == CRM_Teams_Helper::get_team_details_group_id()) {
+      CRM_Teams_Helper::update_team_details($entityID, $params);
     }
   }
 }
@@ -200,19 +212,19 @@ function teams_civicrm_custom($op, $groupId, $entityID, &$params) {
 function teams_create_team_group($objectId, &$objectRef) {
 
   $params = array(
-    'name_a_b' => "Member",
+    'name_a_b' => CRM_Teams_Helper::MEMBER_RELATIONSHIP_A_B,
     'contact_sub_type_a' => "Team"
   );
   $result = civicrm_api3('RelationshipType', 'get', $params);
   $params = array(
     'form_values' => array(
       'relation_type_id' => key($result['values']).'_b_a',
-      'relation_target_name' => $objectRef->legal_name,
+      'relation_target_name' => $objectRef->organization_name,
       'operator'=>'and'
     ),
     'api.Group.create' => array(
-      'name' => $objectRef->legal_name,
-      'title' => $objectRef->legal_name,
+      'name' => $objectRef->organization_name,
+      'title' => $objectRef->organization_name,
       'saved_search_id' => '$value.id',
       'is_active' => 1,
       'visibility' => 'User and User Admin Only',
