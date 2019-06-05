@@ -37,7 +37,8 @@ class CRM_Teams_Helper {
           $input = array(
             'contact_id_a' => intval($teamId),
             'contact_id_b' => intval($teamLeadId),
-            'relationship_type_id' => $relationshipId
+            'relationship_type_id' => $relationshipId,
+            'is_permison_b_a' => 1
           );
           $otherinput['test'] = 1;
           // create it
@@ -100,7 +101,8 @@ class CRM_Teams_Helper {
               $input = array(
                 'contact_id_a' => intval($teamId),
                 'contact_id_b' => intval($contactId),
-                'relationship_type_id' => $relationshipId
+                'relationship_type_id' => $relationshipId,
+                'is_permison_b_a' => 2
               );
               $otherinput['test'] = 1;
               // create it
